@@ -1,26 +1,26 @@
 package main
 
 import (
-	"fmt"
+	// "fmt"
 	"strings"
 )
 
 type GeographicalDatabase struct {
-	countries map[string]Country
+	countries map[string]*Country
 }
 
 func (db *GeographicalDatabase) getCountry(name string) (*Country, error) {
 	v, ok := db.countries[name]
-	fmt.Printf("inside get country %p\n", &v)
+	// fmt.Printf("inside get country %p\n", &v)
 	if !ok {
 		return &Country{}, ErrCountryNotFound
 	}
-	return &v, nil
+	return v, nil
 }
 
 func (db *GeographicalDatabase) getState(stateName, countryName string) (*State, error) {
 	country, err := db.getCountry(countryName)
-	fmt.Printf("inside get country @state %p\n", country)
+	// fmt.Printf("inside get country @state %p\n", country)
 	if err != nil {
 		return &State{}, err
 	}
@@ -28,7 +28,7 @@ func (db *GeographicalDatabase) getState(stateName, countryName string) (*State,
 	if !ok {
 		return &State{}, ErrStateNotFound
 	}
-	return &v, nil
+	return v, nil
 }
 
 func (db *GeographicalDatabase) getCity(cityName, stateName, countryName string) (*City, error) {
@@ -40,7 +40,7 @@ func (db *GeographicalDatabase) getCity(cityName, stateName, countryName string)
 	if !ok {
 		return &City{}, ErrStateNotFound
 	}
-	return &v, nil
+	return v, nil
 }
 
 func (db *GeographicalDatabase) check_permission(distributor, region string) bool {
@@ -51,6 +51,7 @@ func (db *GeographicalDatabase) check_permission(distributor, region string) boo
 	case 1:
 		countryName = regionSplit[0]
 		country, err := db.getCountry(countryName)
+		// fmt.Printf("country when checking: %p\n", country)
 		if err != nil {
 			return false
 		}
@@ -82,7 +83,7 @@ func (db *GeographicalDatabase) add_permission(p Permission) error {
 		case 1:
 			countryName = regionSplit[0]
 			country, err := db.getCountry(countryName)
-			fmt.Printf("country: %p\n", country)
+			// fmt.Printf("country: %p\n", country)
 			if err != nil {
 				return err
 			}
@@ -120,7 +121,7 @@ func (db *GeographicalDatabase) add_permission(p Permission) error {
 
 func (db *GeographicalDatabase) add_data(r Row) {
 	if _, ok := db.countries[r.countryName]; !ok {
-		db.countries[r.countryName] = Country{name: r.countryName, code: r.countryCode, states: make(map[string]State)}
+		db.countries[r.countryName] = &Country{name: r.countryName, code: r.countryCode, states: make(map[string]*State)}
 	}
 	country := db.countries[r.countryName]
 	state := country.add_state(r.stateName, r.stateName)

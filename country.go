@@ -5,13 +5,13 @@ import "fmt"
 type Country struct {
 	name         string
 	code         string
-	states       map[string]State
+	states       map[string]*State
 	distributors []Distributor
 }
 
-func (c *Country) add_state(name, code string) State {
+func (c *Country) add_state(name, code string) *State {
 	if _, ok := c.states[name]; !ok {
-		c.states[name] = State{name: name, code: code, cities: make(map[string]City)}
+		c.states[name] = &State{name: name, code: code, cities: make(map[string]*City)}
 	}
 	return c.states[name]
 }
