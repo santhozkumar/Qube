@@ -1,6 +1,4 @@
-package main
-
-// import "fmt"
+package model
 
 type State struct {
 	name         string
@@ -13,9 +11,6 @@ func (s *State) addDistributor(distributor Distributor) {
 	s.distributors = append(s.distributors, distributor)
 	for _, city := range s.cities {
 		city.addDistributor(distributor)
-		// if city.name == "Chennai" {
-		// fmt.Println(city.name, city.distributors)
-		// }
 	}
 }
 
@@ -32,7 +27,6 @@ func (s *State) removeDistributor(distributor Distributor) error {
 }
 
 func (s *State) isValidDistributor(distributor Distributor) bool {
-	// fmt.Println(s.name, s.distributors)
 	for _, d := range s.distributors {
 		if d == distributor {
 			return true

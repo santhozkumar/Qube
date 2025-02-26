@@ -1,7 +1,6 @@
-package main
+package model
 
 import (
-	// "fmt"
 	"strings"
 )
 
@@ -11,7 +10,6 @@ type GeographicalDatabase struct {
 
 func (db *GeographicalDatabase) getCountry(name string) (*Country, error) {
 	v, ok := db.countries[name]
-	// fmt.Printf("inside get country %p\n", &v)
 	if !ok {
 		return &Country{}, ErrCountryNotFound
 	}
@@ -20,7 +18,6 @@ func (db *GeographicalDatabase) getCountry(name string) (*Country, error) {
 
 func (db *GeographicalDatabase) getState(stateName, countryName string) (*State, error) {
 	country, err := db.getCountry(countryName)
-	// fmt.Printf("inside get country @state %p\n", country)
 	if err != nil {
 		return &State{}, err
 	}
@@ -51,7 +48,6 @@ func (db *GeographicalDatabase) check_permission(distributor, region string) boo
 	case 1:
 		countryName = regionSplit[0]
 		country, err := db.getCountry(countryName)
-		// fmt.Printf("country when checking: %p\n", country)
 		if err != nil {
 			return false
 		}
@@ -75,7 +71,7 @@ func (db *GeographicalDatabase) check_permission(distributor, region string) boo
 	return false
 }
 
-func (db *GeographicalDatabase) add_permission(p Permission) error {
+func (db *GeographicalDatabase) AddPermission(p Permission) error {
 	for _, entry := range p.entries {
 		var countryName, stateName, cityName string
 		regionSplit := strings.Split(entry.region, "-")
@@ -83,14 +79,13 @@ func (db *GeographicalDatabase) add_permission(p Permission) error {
 		case 1:
 			countryName = regionSplit[0]
 			country, err := db.getCountry(countryName)
-			// fmt.Printf("country: %p\n", country)
 			if err != nil {
 				return err
 			}
 			if entry.isInclude {
-				country.addDistributor(p.d)
+				country.addDistributor(p.Dname)
 			} else {
-				country.removeDistributor(p.d)
+				country.removeDistributor(p.Dname)
 			}
 		case 2:
 			countryName, stateName = regionSplit[1], regionSplit[0]
@@ -99,9 +94,9 @@ func (db *GeographicalDatabase) add_permission(p Permission) error {
 				return err
 			}
 			if entry.isInclude {
-				state.addDistributor(p.d)
+				state.addDistributor(p.Dname)
 			} else {
-				state.removeDistributor(p.d)
+				state.removeDistributor(p.Dname)
 			}
 		case 3:
 			countryName, stateName, cityName = regionSplit[2], regionSplit[1], regionSplit[0]
@@ -110,20 +105,24 @@ func (db *GeographicalDatabase) add_permission(p Permission) error {
 				return err
 			}
 			if entry.isInclude {
-				city.addDistributor(p.d)
+				city.addDistributor(p.Dname)
 			} else {
-				city.removeDistributor(p.d)
+				city.removeDistributor(p.Dname)
 			}
 		}
 	}
 	return nil
 }
 
-func (db *GeographicalDatabase) add_data(r Row) {
+func (db *GeographicalDatabase) IngestData(r Row) {
 	if _, ok := db.countries[r.countryName]; !ok {
 		db.countries[r.countryName] = &Country{name: r.countryName, code: r.countryCode, states: make(map[string]*State)}
 	}
 	country := db.countries[r.countryName]
 	state := country.add_state(r.stateName, r.stateName)
 	_ = state.add_city(r.cityName, r.cityCode)
+}
+
+func NewDataStore() GeographicalDatabase {
+	return GeographicalDatabase{countries: make(map[string]*Country)}
 }

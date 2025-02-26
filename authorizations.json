@@ -1,0 +1,22 @@
+{"Data": [
+  {
+    "Distributor": "Distributor1",
+    "Includes": [
+      "India"
+    ],
+    "Excludes": [
+      "Karnataka-India"
+    ]
+  },
+  {
+    "Distributor": "Distributor2",
+    "Includes": [
+      "Tamil Nadu-India"
+    ],
+    "Excludes": [
+      "Chennai-Tamil Nadu-India"
+    ],
+    "Parent": "Distributor1"
+  }
+] 
+}

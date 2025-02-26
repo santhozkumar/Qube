@@ -1,6 +1,4 @@
-package main
-
-import "fmt"
+package model
 
 type Country struct {
 	name         string
@@ -17,16 +15,12 @@ func (c *Country) add_state(name, code string) *State {
 }
 
 func (c *Country) addDistributor(distributor Distributor) {
-	fmt.Println("Adding distribution", c.name)
 	c.distributors = append(c.distributors, distributor)
-	// fmt.Println("Adding distribution", c.distributors)
 	for _, state := range c.states {
-		// fmt.Println("Adding distribution", state.name)
 		state.addDistributor(distributor)
-		if state.name == "Punjab" {
-			fmt.Println(state.name, state.distributors)
-		}
-		// fmt.Println("Adding distribution", len(state.distributors))
+		// if state.name == "Punjab" {
+		// 	fmt.Println(state.name, state.distributors)
+		// }
 	}
 }
 

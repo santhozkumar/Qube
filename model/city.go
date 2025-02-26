@@ -1,4 +1,4 @@
-package main
+package model
 
 type City struct {
 	name         string
@@ -16,7 +16,6 @@ func distributorAt(distributors []Distributor, d Distributor) (int, error) {
 			return i, nil
 		}
 	}
-
 	return -1, ErrDistributorNotFound
 }
 
@@ -37,13 +36,3 @@ func (c *City) isValidDistributor(distributor Distributor) bool {
 	}
 	return false
 }
-
-// func (c *City) removeDistributor(d Distributor) error {
-// 	for i, cityDistributor := range c.distributors {
-// 		if cityDistributor == d {
-// 			c.distributors = append(c.distributors[:i], c.distributors[i+1:]...)
-// 			return nil
-// 		}
-// 	}
-// 	return ErrDistributorNotFound
-// }
